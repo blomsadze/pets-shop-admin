@@ -26,7 +26,12 @@ module.exports = {
     sourceType: 'module'
   },
   plugins: ['@typescript-eslint', 'react', 'react-hooks'],
-  rules: {},
+  rules: {
+    'react/react-in-jsx-scope': 'off',
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn'
+  },
   settings: {
     react: {
       version: 'detect'

@@ -13,13 +13,23 @@ import { createFileRoute } from '@tanstack/react-router';
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root';
+import { Route as AuthenticatedImport } from './routes/_authenticated';
+import { Route as IndexImport } from './routes/index';
 
 // Create Virtual Routes
 
+const LoginLazyImport = createFileRoute('/login')();
 const AboutLazyImport = createFileRoute('/about')();
-const IndexLazyImport = createFileRoute('/')();
+const ProtectedProductsLazyImport = createFileRoute('/_protected/products')();
+const ProtectedMainLazyImport = createFileRoute('/_protected/main')();
 
 // Create/Update Routes
+
+const LoginLazyRoute = LoginLazyImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRoute
+} as any).lazy(() => import('./routes/login.lazy').then((d) => d.Route));
 
 const AboutLazyRoute = AboutLazyImport.update({
   id: '/about',
@@ -27,11 +37,32 @@ const AboutLazyRoute = AboutLazyImport.update({
   getParentRoute: () => rootRoute
 } as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route));
 
-const IndexLazyRoute = IndexLazyImport.update({
+const AuthenticatedRoute = AuthenticatedImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRoute
+} as any);
+
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route));
+} as any);
+
+const ProtectedProductsLazyRoute = ProtectedProductsLazyImport.update({
+  id: '/_protected/products',
+  path: '/products',
+  getParentRoute: () => rootRoute
+} as any).lazy(() =>
+  import('./routes/_protected/products.lazy').then((d) => d.Route)
+);
+
+const ProtectedMainLazyRoute = ProtectedMainLazyImport.update({
+  id: '/_protected/main',
+  path: '/main',
+  getParentRoute: () => rootRoute
+} as any).lazy(() =>
+  import('./routes/_protected/main.lazy').then((d) => d.Route)
+);
 
 // Populate the FileRoutesByPath interface
 
@@ -41,7 +72,14 @@ declare module '@tanstack/react-router' {
       id: '/';
       path: '/';
       fullPath: '/';
-      preLoaderRoute: typeof IndexLazyImport;
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/_authenticated': {
+      id: '/_authenticated';
+      path: '';
+      fullPath: '';
+      preLoaderRoute: typeof AuthenticatedImport;
       parentRoute: typeof rootRoute;
     };
     '/about': {
@@ -51,44 +89,92 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutLazyImport;
       parentRoute: typeof rootRoute;
     };
+    '/login': {
+      id: '/login';
+      path: '/login';
+      fullPath: '/login';
+      preLoaderRoute: typeof LoginLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/_protected/main': {
+      id: '/_protected/main';
+      path: '/main';
+      fullPath: '/main';
+      preLoaderRoute: typeof ProtectedMainLazyImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/_protected/products': {
+      id: '/_protected/products';
+      path: '/products';
+      fullPath: '/products';
+      preLoaderRoute: typeof ProtectedProductsLazyImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute;
+  '/': typeof IndexRoute;
+  '': typeof AuthenticatedRoute;
   '/about': typeof AboutLazyRoute;
+  '/login': typeof LoginLazyRoute;
+  '/main': typeof ProtectedMainLazyRoute;
+  '/products': typeof ProtectedProductsLazyRoute;
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute;
+  '/': typeof IndexRoute;
+  '': typeof AuthenticatedRoute;
   '/about': typeof AboutLazyRoute;
+  '/login': typeof LoginLazyRoute;
+  '/main': typeof ProtectedMainLazyRoute;
+  '/products': typeof ProtectedProductsLazyRoute;
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute;
-  '/': typeof IndexLazyRoute;
+  '/': typeof IndexRoute;
+  '/_authenticated': typeof AuthenticatedRoute;
   '/about': typeof AboutLazyRoute;
+  '/login': typeof LoginLazyRoute;
+  '/_protected/main': typeof ProtectedMainLazyRoute;
+  '/_protected/products': typeof ProtectedProductsLazyRoute;
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath;
-  fullPaths: '/' | '/about';
+  fullPaths: '/' | '' | '/about' | '/login' | '/main' | '/products';
   fileRoutesByTo: FileRoutesByTo;
-  to: '/' | '/about';
-  id: '__root__' | '/' | '/about';
+  to: '/' | '' | '/about' | '/login' | '/main' | '/products';
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/about'
+    | '/login'
+    | '/_protected/main'
+    | '/_protected/products';
   fileRoutesById: FileRoutesById;
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute;
+  IndexRoute: typeof IndexRoute;
+  AuthenticatedRoute: typeof AuthenticatedRoute;
   AboutLazyRoute: typeof AboutLazyRoute;
+  LoginLazyRoute: typeof LoginLazyRoute;
+  ProtectedMainLazyRoute: typeof ProtectedMainLazyRoute;
+  ProtectedProductsLazyRoute: typeof ProtectedProductsLazyRoute;
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexLazyRoute: IndexLazyRoute,
-  AboutLazyRoute: AboutLazyRoute
+  IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRoute,
+  AboutLazyRoute: AboutLazyRoute,
+  LoginLazyRoute: LoginLazyRoute,
+  ProtectedMainLazyRoute: ProtectedMainLazyRoute,
+  ProtectedProductsLazyRoute: ProtectedProductsLazyRoute
 };
 
 export const routeTree = rootRoute
@@ -102,14 +188,30 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/about"
+        "/_authenticated",
+        "/about",
+        "/login",
+        "/_protected/main",
+        "/_protected/products"
       ]
     },
     "/": {
-      "filePath": "index.lazy.tsx"
+      "filePath": "index.tsx"
+    },
+    "/_authenticated": {
+      "filePath": "_authenticated.ts"
     },
     "/about": {
       "filePath": "about.lazy.tsx"
+    },
+    "/login": {
+      "filePath": "login.lazy.tsx"
+    },
+    "/_protected/main": {
+      "filePath": "_protected/main.lazy.tsx"
+    },
+    "/_protected/products": {
+      "filePath": "_protected/products.lazy.tsx"
     }
   }
 }

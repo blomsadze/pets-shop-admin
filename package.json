@@ -14,21 +14,25 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.60.5",
-    "@tanstack/react-router": "^1.81.14",
+   "@tanstack/react-router": "^1.40.0",
     "@tanstack/react-table": "^8.20.5",
     "@typescript-eslint/eslint-plugin": "^8.14.0",
     "@typescript-eslint/parser": "^8.14.0",
     "@vitejs/plugin-react": "^4.3.3",
     "axios": "^1.7.7",
+    "dayjs": "^1.11.13",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.2",
+    "formik": "^2.4.6",
     "lint-staged": "^15.2.10",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-toastify": "^10.0.6"
+    "react-toastify": "^10.0.6",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
-    "@tanstack/router-plugin": "^1.81.9",
+    "@tanstack/eslint-plugin-query": "^5.60.1",
+    "@tanstack/router-plugin": "^1.40.3",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
