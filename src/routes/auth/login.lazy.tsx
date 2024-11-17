@@ -2,7 +2,7 @@ import { createLazyFileRoute } from '@tanstack/react-router';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
-export const Route = createLazyFileRoute('/login')({
+export const Route = createLazyFileRoute('/auth/login')({
   component: Login
 });
 
