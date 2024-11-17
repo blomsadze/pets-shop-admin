@@ -9,7 +9,7 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write . && yarn lint",
     "preview": "vite preview",
-    "prepare": "husky",
+    "prepare": "husky && husky install",
     "precommit": "tsc && lint-staged"
   },
   "dependencies": {
@@ -36,7 +36,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
-    "husky": "^9.1.6",
+    "husky": "^8.0.0",
     "prettier": "^3.3.3",
     "typescript": "~5.6.2",
     "typescript-eslint": "^8.14.0",
